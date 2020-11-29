@@ -1,5 +1,8 @@
 from flask_restful import Resource, reqparse
 from models.hotel import HotelModel
+from logger import Logger
+log = Logger('api')
+
 hoteis = [
     {
         'hotel_id': 'alpha',
@@ -27,7 +30,12 @@ hoteis = [
 class Hoteis(Resource):
 
     def get(self):
-        return {'hoteis': hoteis}
+        try:
+            log.info("Retornando hoteis.")
+            return {'hoteis': hoteis},200
+        except:
+            log.info("Erro ao retornar hoteis")
+        
 
 class Hotel(Resource):
     
@@ -46,7 +54,9 @@ class Hotel(Resource):
     def get(self,hotel_id):
         hotel = Hotel.find_hotel(hotel_id)
         if hotel:
-            return hotel, 200  
+            log.info("Hotel encontrado.")
+            return hotel, 200 
+        log.error("Hotel nao encontrado") 
         return {'message':'Hotel not found'}, 404
 
     def post(self,hotel_id):
